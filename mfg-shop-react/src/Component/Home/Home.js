@@ -6,6 +6,7 @@ import { getAllProduct } from "../../Service/productService";
 import ReactPaginate from "react-paginate";
 import { Link, useNavigate } from "react-router-dom";
 import NoProduct from "../PageAlert/NoProduct/NoProduct";
+import { ToastContainer } from "react-toastify";
 function Home() {
   const navigate = useNavigate();
   const [products, setProducts] = useState(null);
@@ -149,6 +150,7 @@ function Home() {
         </div>
       </div>
       <Footer />
+      <ToastContainer />
     </>
   );
 }

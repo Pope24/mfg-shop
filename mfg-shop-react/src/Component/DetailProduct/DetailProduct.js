@@ -8,27 +8,44 @@ import {
   getProductByTypeProduct,
 } from "../../Service/productService";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import { addProductToCart } from "../../Service/cartService";
 import swal from "sweetalert2";
-const cartFromLocalStorage = JSON.parse(localStorage.getItem("cart") || "[]");
+import { useDispatch, useSelector } from "react-redux";
+import { addNewProductToCart } from "../../Redux/Action";
 function DetailProduct() {
+  const cartFromRedux = useSelector((state) => state.api.cart);
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [productsPrefer, setProductPrefer] = useState(null);
   const [currentImg, setCurrentImg] = useState(0);
   const [sizeChoose, setSizeChoose] = useState(null);
-  const [cart, setCart] = useState(cartFromLocalStorage);
+  const [cart, setCart] = useState(cartFromRedux);
   const handleAddCart = async () => {
-    console.log(cart);
-    setCart([...cart, { product: product, size: sizeChoose, amount: 1 }]);
-    console.log(cart);
+    let cartCopy = [...cart];
+    let foundItem = false;
+    for (let i = 0; i < cartCopy.length; i++) {
+      if (
+        cartCopy[i].product.idProduct === product.idProduct &&
+        cartCopy[i].size.id === sizeChoose.id
+      ) {
+        cartCopy[i].amount = cartCopy[i].amount + 1;
+        foundItem = true;
+        break;
+      }
+    }
+    if (!foundItem) {
+      cartCopy = [
+        ...cartCopy,
+        { product: product, size: sizeChoose, amount: 1 },
+      ];
+    }
+    setCart(cartCopy);
+    dispatch(addNewProductToCart(cartCopy));
+    localStorage.setItem("cart", JSON.stringify(cartCopy));
+    console.log("Click thêm: " + cart);
     new swal("", "Đã thêm " + product.nameProduct + " vào giỏ hàng", "success");
   };
-  useEffect(() => {
-    localStorage.removeItem("cart");
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
   useEffect(() => {
     const fetchApiToGetProduct = async () => {
       const result = await getProductById(id);

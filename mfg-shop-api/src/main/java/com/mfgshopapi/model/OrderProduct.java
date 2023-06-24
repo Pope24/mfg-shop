@@ -20,6 +20,13 @@ public class OrderProduct {
     public OrderProduct() {
     }
 
+    public OrderProduct(Product product, Order order, int amountProduct, Size size) {
+        this.product = product;
+        this.order = order;
+        this.amountProduct = amountProduct;
+        this.size = size;
+    }
+
     public OrderProduct(int id, Product product, Order order, int amountProduct, Size size) {
         this.id = id;
         this.product = product;

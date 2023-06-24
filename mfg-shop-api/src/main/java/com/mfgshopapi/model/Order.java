@@ -13,8 +13,10 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_order")
     private int id;
-    @OneToOne
+    @ManyToOne
     private Customer customer;
+    @ManyToOne
+    private Employee employee;
     @Column(name = "total_money", columnDefinition = "decimal(12,0)")
     private BigDecimal totalMoney;
     @Column(name = "status_payment", columnDefinition = "tinyint")
@@ -23,17 +25,21 @@ public class Order {
     private int statusOrder;
     @Column(name = "booking_date", columnDefinition = "date")
     private LocalDate bookingDate;
+    @Column(name = "delivery_address", columnDefinition = "mediumtext")
+    private String deliveryAddress;
 
     public Order() {
     }
 
-    public Order(int id, Customer customer, BigDecimal totalMoney, int statusPayment, int statusOrder, LocalDate bookingDate) {
+    public Order(int id, Customer customer, Employee employee, BigDecimal totalMoney, int statusPayment, int statusOrder, LocalDate bookingDate, String deliveryAddress) {
         this.id = id;
         this.customer = customer;
+        this.employee = employee;
         this.totalMoney = totalMoney;
         this.statusPayment = statusPayment;
         this.statusOrder = statusOrder;
         this.bookingDate = bookingDate;
+        this.deliveryAddress = deliveryAddress;
     }
 
     public int getId() {
@@ -82,5 +88,21 @@ public class Order {
 
     public void setBookingDate(LocalDate bookingDate) {
         this.bookingDate = bookingDate;
+    }
+
+    public Employee getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
+    }
+
+    public String getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(String deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 }

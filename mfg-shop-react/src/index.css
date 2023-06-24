@@ -15,9 +15,9 @@ body {
   line-height: 1.5;
 }
 a {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
+  color: #000 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
 }
 ul {
   list-style: none;
