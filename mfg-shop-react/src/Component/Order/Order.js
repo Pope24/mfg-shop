@@ -11,6 +11,7 @@ import {
   getAllTown,
   getUserByNameAccount,
   paymentByPostpaid,
+  paymentByVNPay,
 } from "../../Service/orderService";
 import { Field, Form, Formik } from "formik";
 import { useDispatch } from "react-redux";
@@ -144,6 +145,20 @@ function Order() {
                   dispatch(addNewProductToCart([]));
                   localStorage.removeItem("cart");
                 }, 3000);
+              } else if (+value.methodPay === 1) {
+                console.log(value);
+                const paymentByVNPayOnline = async () => {
+                  const result = await paymentByVNPay(value, token);
+                  handleOpen();
+                  setTimeout(() => {
+                    window.location = result.urlForward;
+                    handleClose();
+                    toast.success(
+                      "Đặt hàng thành công, đơn hàng sẽ được giao trong 3-5 ngày."
+                    );
+                  }, 3000);
+                };
+                paymentByVNPayOnline();
               }
             }}
           >

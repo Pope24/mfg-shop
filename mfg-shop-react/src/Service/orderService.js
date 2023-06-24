@@ -70,3 +70,34 @@ export const paymentByPostpaid = async (value, token) => {
     console.log(e);
   }
 };
+export const paymentByVNPay = async (value, token) => {
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const result = await axios.post(
+      "http://localhost:8080/api/user/create-payment",
+      value,
+      { headers }
+    );
+    return result.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
+export const confirmPaymentSuccessVNPay = async (value, token) => {
+  console.log(value, token);
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const result = await axios.post(
+      "http://localhost:8080/api/user/confirm-payment-vnpay",
+      value,
+      { headers }
+    );
+    return result.data;
+  } catch (e) {
+    console.log(e);
+  }
+};

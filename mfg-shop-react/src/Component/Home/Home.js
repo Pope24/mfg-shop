@@ -4,10 +4,17 @@ import Header from "../Common/Header/Header";
 import styles from "./Home.module.css";
 import { getAllProduct } from "../../Service/productService";
 import ReactPaginate from "react-paginate";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import NoProduct from "../PageAlert/NoProduct/NoProduct";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
+import { confirmPaymentSuccessVNPay } from "../../Service/orderService";
+import { useDispatch } from "react-redux";
+import { addNewProductToCart } from "../../Redux/Action";
 function Home() {
+  const account = JSON.parse(localStorage.getItem("account"));
+  const dispatch = useDispatch();
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  const query = useQuery();
   const navigate = useNavigate();
   const [products, setProducts] = useState(null);
   const [searchAndPage, setSearchAndPage] = useState({
@@ -31,6 +38,27 @@ function Home() {
     };
     fetchApiToGetProducts();
   }, [searchAndPage]);
+  useEffect(() => {
+    const orderId = query.get("vnp_TxnRef");
+    const statusOrder = query.get("vnp_ResponseCode");
+    if (statusOrder != null && orderId !== 0) {
+      const fetchApiToConfirmOrderPaied = async () => {
+        const result = await confirmPaymentSuccessVNPay(
+          { statusCode: statusOrder, orderId: +orderId },
+          account.token
+        );
+        if (result) {
+          dispatch(addNewProductToCart([]));
+          localStorage.removeItem("cart");
+          navigate("/");
+          toast.success(
+            "Đặt hàng thành công, đơn hàng sẽ được giao trong 3-5 ngày."
+          );
+        }
+      };
+      fetchApiToConfirmOrderPaied();
+    }
+  }, []);
   return (
     <>
       <Header onSearchClick={handleSearchChange} />

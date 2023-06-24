@@ -171,6 +171,8 @@ function History() {
                             >
                               {order[0].order.statusOrder === 0
                                 ? "Chưa giao"
+                                : order[0].order.statusOrder === 1
+                                ? "Đang giao"
                                 : "Đã giao"}
                             </td>
                           </tr>
