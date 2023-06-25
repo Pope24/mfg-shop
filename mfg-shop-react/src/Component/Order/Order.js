@@ -10,6 +10,7 @@ import {
   getAllProvince,
   getAllTown,
   getUserByNameAccount,
+  paymentByPayPal,
   paymentByPostpaid,
   paymentByVNPay,
 } from "../../Service/orderService";
@@ -159,6 +160,20 @@ function Order() {
                   }, 3000);
                 };
                 paymentByVNPayOnline();
+              } else if (+value.methodPay === 2) {
+                const paymentByPaypalOnline = async () => {
+                  const result = await paymentByPayPal(value, token);
+                  console.log(result);
+                  handleOpen();
+                  setTimeout(() => {
+                    window.location = result.link;
+                    handleClose();
+                    toast.success(
+                      "Đặt hàng thành công, đơn hàng sẽ được giao trong 3-5 ngày."
+                    );
+                  }, 3000);
+                };
+                paymentByPaypalOnline();
               }
             }}
           >

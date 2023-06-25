@@ -101,3 +101,19 @@ export const confirmPaymentSuccessVNPay = async (value, token) => {
     console.log(e);
   }
 };
+export const paymentByPayPal = async (value, token) => {
+  console.log(value, token);
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  try {
+    const result = await axios.post(
+      "http://localhost:8080/api/user/pay-paypal",
+      value,
+      { headers }
+    );
+    return result.data;
+  } catch (e) {
+    console.log(e);
+  }
+};
