@@ -4,7 +4,7 @@ import Header from "../Common/Header/Header";
 import styles from "./Order.module.css";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   getAllDistrict,
   getAllProvince,
@@ -16,7 +16,7 @@ import {
 } from "../../Service/orderService";
 import { Field, Form, Formik } from "formik";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { addNewProductToCart } from "../../Redux/Action";
 function Order() {
   const [user, setUser] = useState(null);
@@ -27,7 +27,8 @@ function Order() {
   const [town, setTown] = useState([]);
   const [addressTakeOrder, setAddressTakeOrder] = useState("");
   const [open, setOpen] = useState(false);
-  const [isEmailExist, setIsEmailExist] = useState(null);
+  const useQuery = () => new URLSearchParams(useLocation().search);
+  const query = useQuery();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleClose = () => {
@@ -49,6 +50,12 @@ function Order() {
         setUser(result);
       };
       getInforUser();
+    }
+    if (query.get("transaction_paypal") === "failed") {
+      navigate("/payment");
+      toast.error(
+        "Đặt hàng thất bại, hãy thử thanh toán bằng phương thức khác."
+      );
     }
     const cart = JSON.parse(localStorage.getItem("cart"));
     setListProduct(cart);
@@ -103,7 +110,7 @@ function Order() {
   };
   return (
     <>
-      <Header onSearchClick={() => {}} />
+      <Header />
       <div
         className={`${styles.content} container`}
         style={{ marginBottom: 100 }}
@@ -168,9 +175,6 @@ function Order() {
                   setTimeout(() => {
                     window.location = result.link;
                     handleClose();
-                    toast.success(
-                      "Đặt hàng thành công, đơn hàng sẽ được giao trong 3-5 ngày."
-                    );
                   }, 3000);
                 };
                 paymentByPaypalOnline();
@@ -400,6 +404,7 @@ function Order() {
           <CircularProgress color="inherit" />
         </Backdrop>
       </div>
+      <ToastContainer />
     </>
   );
 }

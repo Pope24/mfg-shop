@@ -65,7 +65,7 @@ function DetailProduct() {
   }, [product]);
   return (
     <>
-      <Header onSearchClick={() => {}} />
+      <Header />
       <div className="container mt-5 mb-5">
         {product && (
           <div className="row">

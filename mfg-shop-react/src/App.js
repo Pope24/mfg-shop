@@ -13,6 +13,9 @@ import ResetPassword from "./Component/Login/ResetPassword";
 import Order from "./Component/Order/Order";
 import History from "./Component/History/History";
 import OrderManagement from "./Component/Order/OrderManagement";
+import ProductChart from "./Component/Chart/ProductChart/ProductChart";
+import Chart from "./Component/Chart/Chart";
+import ChatSocket from "./Component/ChatSocket/ChatSocket";
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -26,6 +29,8 @@ function App() {
       <Route path="/" element={<Home />} />
       <Route path="/product/:id" element={<DetailProduct />} />
       <Route path="/shopping-cart" element={<Cart />} />
+      <Route path="/statistic" element={<Chart />} />
+      <Route path="/chatting" element={<ChatSocket />} />
       <Route path="/login" element={<Login />} />
       <Route path="/confirm-email" element={<ConfirmEmail />} />
       <Route path="/reset-password" element={<ResetPassword />} />

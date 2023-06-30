@@ -5,17 +5,26 @@ import { SearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-function Header({ onSearchClick }) {
-  const [value, setValue] = useState("");
+import { getAllProduct } from "../../../Service/productService";
+function Header() {
   const [roles, setRoles] = useState(null);
   const [account, setAccount] = useState(null);
+  const [productSearched, setProductSearched] = useState(null);
+  const [searchAndPage, setSearchAndPage] = useState({
+    search: "",
+    typeProduct: 0,
+  });
+  useEffect(() => {
+    const fetchApiToGetProducts = async () => {
+      const result = await getAllProduct(searchAndPage);
+      setProductSearched(result.content);
+    };
+    fetchApiToGetProducts();
+  }, [searchAndPage]);
+  const handleSearchChange = (e) => {
+    setSearchAndPage((prev) => ({ ...prev, search: e.target.value }));
+  };
   const navigate = useNavigate();
-  const handleInputChange = (event) => {
-    setValue(event.target.value);
-  };
-  const handleButtonClick = () => {
-    onSearchClick(value);
-  };
   useEffect(() => {
     const account = JSON.parse(localStorage.getItem("account"));
     if (account) {
@@ -27,6 +36,12 @@ function Header({ onSearchClick }) {
       setRoles(roleArr);
     }
   }, []);
+  const handleBlurInputSearch = () => {
+    document.getElementById("productSeached").style.opacity = 0;
+  };
+  const handleFocusInputSearch = () => {
+    document.getElementById("productSeached").style.opacity = 1;
+  };
   return (
     <>
       <div className={styles.header}>
@@ -39,20 +54,82 @@ function Header({ onSearchClick }) {
           </div>
           <div className="d-flex justify-content-end align-items-center">
             <div className={styles.search_box}>
-              <button
-                className={`${styles.btn_search}  d-flex`}
-                onClick={handleButtonClick}
+              <div className="d-flex align-items-center">
+                <button className={`${styles.btn_search}  d-flex`}>
+                  <SearchOutlined style={{ fontSize: 36, color: "#a6a6a6" }} />
+                </button>
+                <input
+                  type="text"
+                  className={styles.input_search}
+                  placeholder="Tìm kiếm sản phẩm..."
+                  onChange={handleSearchChange}
+                  onBlur={handleBlurInputSearch}
+                  onFocus={handleFocusInputSearch}
+                />
+              </div>
+              <div
+                id="productSeached"
+                style={{
+                  position: "absolute",
+                  top: 50,
+                  backgroundColor: "chocolate",
+                  zIndex: 10000,
+                  width: "100%",
+                }}
               >
-                <SearchOutlined style={{ fontSize: 36, color: "#a6a6a6" }} />
-              </button>
-              <input
-                type="text"
-                className={styles.input_search}
-                placeholder="Tìm kiếm sản phẩm..."
-                value={value}
-                onChange={handleInputChange}
-                onBlur={handleButtonClick}
-              />
+                {productSearched &&
+                productSearched.length > 0 &&
+                searchAndPage.search.trim() !== "" ? (
+                  productSearched.map((product, index) => {
+                    return (
+                      <div
+                        key={index}
+                        className="d-flex justify-content-between align-items-center"
+                        style={{ border: "1px solid", height: 50 }}
+                        onClick={() => {
+                          navigate("/product/" + product.idProduct);
+                        }}
+                      >
+                        <div className="col-2">
+                          <img
+                            className="w-50"
+                            src={product.imgProducts[0].pathImg}
+                            alt="IMG"
+                          />
+                        </div>
+                        <p
+                          className="m-0"
+                          style={{ fontSize: 14, fontWeight: 600 }}
+                        >
+                          {product.nameProduct}
+                        </p>
+                        <p
+                          className="m-0"
+                          style={{ fontSize: 14, fontWeight: 600 }}
+                        >
+                          {product.currCost.toLocaleString("it-IT", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </p>
+                      </div>
+                    );
+                  })
+                ) : productSearched &&
+                  productSearched.length === 0 &&
+                  searchAndPage.search.trim() !== "" ? (
+                  <div
+                    style={{ border: "1px solid", height: 50 }}
+                    className="w-100 d-flex justify-content-center align-items-center"
+                  >
+                    <p className="m-0">
+                      Không tìm thấy sản phẩm "{searchAndPage.search}"
+                    </p>
+                  </div>
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
             <ShoppingCartOutlined
               className="ms-5"
@@ -87,7 +164,7 @@ function Header({ onSearchClick }) {
                 >
                   <button
                     onClick={() => {
-                      navigate("/login");
+                      navigate("/statistic");
                     }}
                     className="bg-transparent border-0 text-light"
                   >
@@ -100,7 +177,7 @@ function Header({ onSearchClick }) {
                   <div className={`${styles.author_account}`}>
                     <button
                       onClick={() => {
-                        navigate("/login");
+                        navigate("/chatting");
                       }}
                       className="bg-transparent border-0 text-light"
                     >

@@ -25,9 +25,6 @@ function Home() {
   const handlePageClick = (event) => {
     setSearchAndPage((prev) => ({ ...prev, page: event.selected }));
   };
-  const handleSearchChange = (value) => {
-    setSearchAndPage((prev) => ({ ...prev, search: value }));
-  };
   const handleChangeTypeProduct = (value) => {
     setSearchAndPage((prev) => ({ ...prev, typeProduct: value }));
   };
@@ -41,6 +38,7 @@ function Home() {
   useEffect(() => {
     const orderId = query.get("vnp_TxnRef");
     const statusOrder = query.get("vnp_ResponseCode");
+    const transaction = query.get("transaction_paypal");
     if (statusOrder != null && orderId !== 0) {
       const fetchApiToConfirmOrderPaied = async () => {
         const result = await confirmPaymentSuccessVNPay(
@@ -58,17 +56,31 @@ function Home() {
       };
       fetchApiToConfirmOrderPaied();
     }
+    if (transaction === "success") {
+      dispatch(addNewProductToCart([]));
+      localStorage.removeItem("cart");
+      navigate("/");
+      toast.success(
+        "Đặt hàng thành công, đơn hàng sẽ được giao trong 3-5 ngày."
+      );
+    }
   }, []);
   return (
     <>
-      <Header onSearchClick={handleSearchChange} />
+      <Header />
       <div class={styles.main}>
         <div class={`${styles.sidebar} + w-15`}>
           <ul class={`${styles.menu_sidebar} + w-100`}>
-            <li>Best seller</li>
             <li
               onClick={() => {
                 handleChangeTypeProduct(0);
+              }}
+            >
+              Best seller
+            </li>
+            <li
+              onClick={() => {
+                handleChangeTypeProduct(-1);
               }}
             >
               Tất cả sản phẩm

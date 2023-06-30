@@ -1,0 +1,10 @@
+.btn {
+  padding: 3px 7px;
+  border: 1px solid #888fab;
+  color: #888fab;
+}
+.active {
+  background-color: #888fab;
+  color: #fff;
+  border: 1px solid #888fab;
+}

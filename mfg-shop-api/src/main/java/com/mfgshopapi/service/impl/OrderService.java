@@ -2,6 +2,7 @@ package com.mfgshopapi.service.impl;
 
 import com.mfgshopapi.dto.OrderDTO;
 import com.mfgshopapi.dto.OrderProductDTO;
+import com.mfgshopapi.dto.TopCustomerDTO;
 import com.mfgshopapi.model.Customer;
 import com.mfgshopapi.model.Employee;
 import com.mfgshopapi.model.Order;
@@ -43,6 +44,11 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public void deleteOrderById(int id) {
+        orderRepository.deleteById(id);
+    }
+
+    @Override
     public Order saveNewOrder(Order order) {
         return orderRepository.save(order);
     }
@@ -79,5 +85,10 @@ public class OrderService implements IOrderService {
     @Override
     public List<Order> findOrdersByEmployee(int id) {
         return orderRepository.findOrdersByEmployee_Id(id);
+    }
+
+    @Override
+    public List<TopCustomerDTO> getTopCustomerBuyer(Pageable pageable) {
+        return orderRepository.getTopCustomerBuyer(pageable);
     }
 }

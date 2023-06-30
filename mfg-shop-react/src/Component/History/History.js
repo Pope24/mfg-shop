@@ -38,7 +38,7 @@ function History() {
   }, []);
   return (
     <>
-      <Header onSearchClick={() => {}} />
+      <Header />
       <div className={`${styles.content} p-2 mb-5 row m-auto`}>
         {history && user && (
           <>

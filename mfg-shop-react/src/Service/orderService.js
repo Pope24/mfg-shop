@@ -102,7 +102,6 @@ export const confirmPaymentSuccessVNPay = async (value, token) => {
   }
 };
 export const paymentByPayPal = async (value, token) => {
-  console.log(value, token);
   const headers = {
     Authorization: `Bearer ${token}`,
   };
